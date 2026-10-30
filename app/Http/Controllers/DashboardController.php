@@ -15,6 +15,10 @@ class DashboardController extends Controller
 {
     public function __invoke(Request $request): View
     {
+        if ($request->user()->hasAnyRole(['student', 'graduate'])) {
+            return redirect()->route('student-portal.index');
+        }
+
         $organizationId = $request->user()->organization_id;
 
         return view('dashboard', [
