@@ -66,6 +66,9 @@ Route::middleware('auth')->group(function (): void {
             Route::post('/occupations', [LaborMarketController::class, 'storeOccupation'])->name('occupations.store');
             Route::post('/profiles', [LaborMarketController::class, 'storeProfile'])->name('profiles.store');
             Route::post('/requirements', [LaborMarketController::class, 'storeRequirement'])->name('requirements.store');
+            Route::post('/job-postings', [LaborMarketController::class, 'storePosting'])->name('postings.store');
+            Route::post('/job-postings/{posting}/analyze', [LaborMarketController::class, 'analyzePosting'])->name('postings.analyze');
+            Route::post('/job-postings/{posting}/approve', [LaborMarketController::class, 'approvePosting'])->name('postings.approve');
         });
     });
 
