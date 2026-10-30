@@ -28,6 +28,7 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/analysis/{analysisRun}', [AnalysisController::class, 'show'])->name('analysis.show');
 
     Route::middleware('role:super-admin|university-admin|department-admin|instructor')->group(function (): void {
         Route::prefix('academic')->name('academic.')->group(function (): void {
@@ -76,7 +77,6 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/', [AnalysisController::class, 'index'])->name('index');
         Route::post('/curriculum', [AnalysisController::class, 'runCurriculum'])->name('curriculum');
         Route::post('/student', [AnalysisController::class, 'runStudent'])->name('student');
-        Route::get('/{analysisRun}', [AnalysisController::class, 'show'])->name('show');
     });
 
     Route::middleware('role:student|graduate')->prefix('my-learning')->name('student-portal.')->group(function (): void {
