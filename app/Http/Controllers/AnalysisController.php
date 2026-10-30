@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\GenerateGapRecommendations;
 use App\Models\AnalysisRun;
 use App\Models\CurriculumVersion;
 use App\Models\JobProfile;
@@ -47,6 +48,9 @@ class AnalysisController extends Controller
             ->firstOrFail();
 
         $run = $service->analyzeCurriculum($curriculum, $profile, $request->user());
+        if (filled(config('ai.providers.'.config('csga.ai.provider').'.key'))) {
+            GenerateGapRecommendations::dispatch($run->id);
+        }
 
         return redirect()->route('analysis.show', $run)->with('success', 'Curriculum analysis completed.');
     }
@@ -69,6 +73,9 @@ class AnalysisController extends Controller
             ->firstOrFail();
 
         $run = $service->analyzeStudent($student, $profile, $request->user());
+        if (filled(config('ai.providers.'.config('csga.ai.provider').'.key'))) {
+            GenerateGapRecommendations::dispatch($run->id);
+        }
 
         return redirect()->route('analysis.show', $run)->with('success', 'Student analysis completed.');
     }
