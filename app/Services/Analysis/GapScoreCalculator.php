@@ -27,7 +27,7 @@ class GapScoreCalculator
             return null;
         }
 
-        $this->assertLevel((int) ceil($currentLevel));
+        $this->assertCurrentLevel($currentLevel);
 
         return round(min($currentLevel, $requiredLevel) / $requiredLevel, 4);
     }
