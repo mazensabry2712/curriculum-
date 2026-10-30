@@ -18,6 +18,7 @@ class Course extends Model
 
     public function organization(): BelongsTo { return $this->belongsTo(Organization::class); }
     public function outcomes(): HasMany { return $this->hasMany(CourseOutcome::class); }
+    public function assessments(): HasMany { return $this->hasMany(CurriculumAssessment::class); }
     public function skillMappings(): HasMany { return $this->hasMany(CourseSkillMapping::class); }
     public function skills(): BelongsToMany
     {
