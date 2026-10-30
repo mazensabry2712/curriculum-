@@ -87,6 +87,7 @@ return new class extends Migration
 
         Schema::create('job_postings', function (Blueprint $table): void {
             $table->id();
+            $table->foreignId('organization_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('employer_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('job_profile_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('job_market_source_id')->nullable()->constrained()->nullOnDelete();
