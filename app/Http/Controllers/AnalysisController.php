@@ -75,7 +75,11 @@ class AnalysisController extends Controller
 
     public function show(Request $request, AnalysisRun $analysisRun): View
     {
-        abort_unless($analysisRun->organization_id === $request->user()->organization_id, 404);
+        if ($request->user()->hasAnyRole(['student', 'graduate'])) {
+            abort_unless($analysisRun->student_profile_id === $request->user()->studentProfile?->id, 404);
+        } else {
+            abort_unless($analysisRun->organization_id === $request->user()->organization_id, 404);
+        }
 
         return view('analysis.show', [
             'run' => $analysisRun->load(['jobProfile', 'curriculumVersion.program', 'studentProfile.user', 'skillResults.skill', 'recommendations.skill']),
