@@ -333,7 +333,7 @@ return new class extends Migration
             $table->foreignId('analysis_run_id')->constrained()->cascadeOnDelete();
             $table->foreignId('skill_id')->constrained()->restrictOnDelete();
             $table->unsignedTinyInteger('required_level');
-            $table->unsignedTinyInteger('current_level')->nullable();
+            $table->decimal('current_level', 3, 1)->nullable();
             $table->decimal('gap_score', 6, 2)->nullable();
             $table->decimal('importance_weight', 6, 2)->default(1);
             $table->decimal('alignment_contribution', 8, 4)->nullable();
