@@ -22,5 +22,6 @@ class StudentProfile extends Model
             ->withPivot('is_primary')->withTimestamps();
     }
     public function projects(): HasMany { return $this->hasMany(StudentProject::class); }
+    public function certificates(): HasMany { return $this->hasMany(StudentCertificate::class); }
     public function analyses(): HasMany { return $this->hasMany(AnalysisRun::class); }
 }
