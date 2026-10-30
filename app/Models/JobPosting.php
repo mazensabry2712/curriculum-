@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JobPosting extends Model
 {
-    protected $fillable = ['employer_id', 'job_profile_id', 'job_market_source_id', 'external_reference', 'title', 'description', 'industry', 'location', 'country', 'employment_type', 'status', 'published_at'];
+    protected $fillable = ['organization_id', 'employer_id', 'job_profile_id', 'job_market_source_id', 'external_reference', 'title', 'description', 'industry', 'location', 'country', 'employment_type', 'status', 'published_at'];
     protected function casts(): array { return ['published_at' => 'datetime']; }
     public function organization(): BelongsTo { return $this->belongsTo(Organization::class); }
     public function employer(): BelongsTo { return $this->belongsTo(Employer::class); }
