@@ -36,6 +36,7 @@ class DocumentController extends Controller
             'course_id' => ['required', 'integer', 'exists:courses,id'],
             'title' => ['required', 'string', 'max:180'],
             'document' => ['required', 'file', 'mimes:pdf', 'mimetypes:application/pdf', "max:{$maxKb}"],
+            'ai_processing_consent' => ['accepted'],
         ]);
 
         $course = Course::whereKey($data['course_id'])
