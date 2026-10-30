@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\GenerateGapRecommendations;
 use App\Models\JobProfile;
 use App\Models\Skill;
 use App\Models\StudentProject;
@@ -119,6 +120,9 @@ class StudentPortalController extends Controller
             ->firstOrFail();
 
         $run = $service->analyzeStudent($student, $profile, $request->user());
+        if (filled(config('ai.providers.'.config('csga.ai.provider').'.key'))) {
+            GenerateGapRecommendations::dispatch($run->id);
+        }
 
         return redirect()->route('analysis.show', $run);
     }
