@@ -1,58 +1,119 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Curriculum Skills Gap Analyzer (CSGA)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+AI-assisted, evidence-led analysis of academic curricula and individual student skills against labor-market requirements.
 
-## About Laravel
+## What it does
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Manage organizations, departments, programs, versioned curricula, courses, and learning outcomes.
+- Maintain a shared skill taxonomy with categories and aliases.
+- Define occupations, job profiles, and weighted skill requirements.
+- Upload course syllabus PDFs and extract outcomes and skills asynchronously with AI.
+- Review AI suggestions before they become approved curriculum mappings.
+- Analyze curriculum coverage against a target job profile.
+- Maintain student portfolios, assessments, and career targets.
+- Analyze student readiness using the latest verified assessment per skill.
+- Generate transparent rule-based recommendations and optional AI drafts.
+- Preserve analysis snapshots so results can be audited later.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Technology
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Layer | Choice |
+|---|---|
+| Backend | PHP 8.3+ / Laravel 13 |
+| Database | MySQL 8+ |
+| UI | Blade + Tailwind CSS 4 |
+| Interactive components | Livewire 4 available |
+| AI | Laravel AI SDK with configurable provider |
+| Authorization | Spatie Laravel Permission |
+| Background work | Laravel Queue |
+| Tests | Pest 5 |
+| Assets | Vite 8 / Node.js 22 |
 
-## Learning Laravel
+## Quick start (Windows / Laravel Herd)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Requirements: PHP 8.3+, Composer 2, MySQL 8+, Node.js 22, npm.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+~~~powershell
+git clone https://github.com/mazensabry2712/curriculum-.git
+Set-Location .\curriculum-
+composer install
+Copy-Item .env.example .env
+php artisan key:generate
+npm install
+~~~
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Create a MySQL database named csga_db, then set DB_HOST, DB_DATABASE, DB_USERNAME, and DB_PASSWORD in .env.
 
-## Agentic Development
+Publish the AI SDK configuration and provider resources:
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+~~~powershell
+php artisan vendor:publish --provider="Laravel\Ai\AiServiceProvider"
+~~~
 
-```bash
-composer require laravel/boost --dev
+Set the private provider key and model in .env:
 
-php artisan boost:install
-```
+~~~dotenv
+OPENAI_API_KEY=
+CSGA_AI_PROVIDER=openai
+CSGA_AI_MODEL=gpt-4.1-mini
+CSGA_AI_TIMEOUT=120
+~~~
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Run the database setup and build:
 
-## Contributing
+~~~powershell
+php artisan migrate --seed
+npm run build
+php artisan serve
+~~~
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+In a second terminal, start a worker for AI and recommendation jobs:
 
-## Code of Conduct
+~~~powershell
+php artisan queue:work --tries=2 --timeout=180
+~~~
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Open http://127.0.0.1:8000 and create an organization workspace. Detailed instructions are in docs/SETUP.md.
 
-## Security Vulnerabilities
+## Scoring methodology
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+For required skill i, with required level R, current level C, and importance weight W:
 
-## License
+\[
+Gap_i = \max(0, (R_i-C_i)/R_i)\times100
+\]
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+\[
+Alignment = \frac{\sum W_i \times \min(C_i,R_i)/R_i}{\sum W_i}\times100
+\]
+
+Curriculum coverage uses approved course-skill mappings and credit-hour weights. Student analysis uses verified assessments only. An unassessed student skill is not treated as a zero. Assessment coverage is reported separately from alignment.
+
+See docs/ACADEMIC_METHODOLOGY.md for definitions, assumptions, and evaluation.
+
+## AI governance
+
+AI extracts structured suggestions with evidence and confidence. Instructors or advisors must review them before they become official mappings or job requirements. Files are private by default. Uploading a syllabus requires explicit consent to submit its content to the configured AI provider.
+
+See docs/AI_PIPELINE.md.
+
+## Team workflow
+
+Use main as the stable integration branch. Contributors should work on feature branches and submit pull requests. Migrations and shared data contracts should be coordinated by one integration owner.
+
+See docs/TEAM_WORKFLOW.md.
+
+## Documentation
+
+- docs/SETUP.md
+- docs/ARCHITECTURE.md
+- docs/DATA_MODEL.md
+- docs/AI_PIPELINE.md
+- docs/ACADEMIC_METHODOLOGY.md
+- docs/TEAM_WORKFLOW.md
+
+## Status
+
+The repository contains the Laravel application foundation, academic and skills domains, labor-market and student modules, AI agents and queued jobs, deterministic analysis services, primary web screens, migrations, seeders, tests, and GitHub Actions validation. A real provider API key and end-to-end testing with approved sample data are still required before a graduation demonstration.
+
+No real student records, private syllabus files, or API secrets should be committed.
