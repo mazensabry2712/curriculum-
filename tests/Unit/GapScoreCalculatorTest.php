@@ -39,7 +39,8 @@ it('calculates weighted alignment and excludes unassessed evidence', function ()
 it('classifies gap severity consistently', function () {
     expect($this->calculator->resultStatus(4, 4.0))->toBe('aligned');
     expect($this->calculator->resultStatus(4, 3.0))->toBe('minor_gap');
-    expect($this->calculator->resultStatus(5, 2.0))->toBe('moderate_gap');
+    expect($this->calculator->resultStatus(5, 2.1))->toBe('moderate_gap');
+    expect($this->calculator->resultStatus(5, 2.0))->toBe('critical_gap');
     expect($this->calculator->resultStatus(5, 1.0))->toBe('critical_gap');
 });
 
