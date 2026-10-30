@@ -59,11 +59,6 @@ class AnalyzeSyllabusDocument implements ShouldQueue
 
             DB::transaction(function () use ($document, $run, $output): void {
                 foreach ($output['skills'] as $skill) {
-                    $normalized = mb_strtolower(trim($skill['skill_name']));
-                    $match = $document->course?->organization
-                        ? null
-                        : null;
-
                     DocumentSkillSuggestion::create([
                         'ai_run_id' => $run->id,
                         'skill_id' => null,
