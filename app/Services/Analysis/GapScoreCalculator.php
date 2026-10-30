@@ -14,7 +14,7 @@ class GapScoreCalculator
             return null;
         }
 
-        $this->assertLevel((int) ceil($currentLevel));
+        $this->assertCurrentLevel($currentLevel);
 
         return round(max(0, ($requiredLevel - min($currentLevel, $requiredLevel)) / $requiredLevel) * 100, 2);
     }
@@ -73,6 +73,13 @@ class GapScoreCalculator
             $gap < 60 => 'moderate_gap',
             default => 'critical_gap',
         };
+    }
+
+    private function assertCurrentLevel(float $level): void
+    {
+        if ($level < 0 || $level > 5) {
+            throw new InvalidArgumentException('Current skill levels must be between 0 and 5.');
+        }
     }
 
     private function assertLevel(int $level): void
